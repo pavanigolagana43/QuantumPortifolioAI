@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>QuantumPortfolioAI</title>
+    <style>
+      :root {
+        --bg: #0a1220;
+        --bg-2: #101d2e;
+        --panel: rgba(18, 32, 46, 0.85);
+        --panel-2: rgba(13, 23, 33, 0.9);
+        --line: rgba(148, 176, 204, 0.18);
+        --text: #edf6ff;
+        --muted: #9bb4c8;
+        --blue: #64c8ff;
+        --cyan: #79d8ff;
+        --green: #69f0b1;
+        --shadow: rgba(0, 0, 0, 0.22);
+      }
+
+      * { box-sizing: border-box; }
+
+      html, body {
+        margin: 0;
+        min-height: 100%;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background:
+          radial-gradient(circle at 10% 20%, rgba(88, 136, 255, 0.25), transparent 28%),
+          radial-gradient(circle at 80% 10%, rgba(58, 194, 255, 0.18), transparent 32%),
+          linear-gradient(135deg, #020b15 0%, #081a2f 45%, #0d1e36 100%);
+        color: var(--text);
+      }
+
+      body {
+        padding: 28px 32px 40px;
+      }
+
+      .site-shell {
+        max-width: 1280px;
+        margin: 0 auto;
+      }
+
+      .topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 22px;
+      }
+
+      .brand-wrap {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .brand-mark {
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #7be0ff, #79ffbd);
+        box-shadow: 0 0 18px rgba(122, 230, 255, 0.55);
+      }
+
+      .brand {
+        font-size: 2.2rem;
+        font-weight: 800;
+        letter-spacing: -0.06em;
+        margin: 0;
+      }
+
+      .chip {
+        background: rgba(97, 162, 255, 0.12);
+        border: 1px solid rgba(124, 197, 255, 0.3);
+        color: #87d7ff;
+        border-radius: 999px;
+        padding: 10px 18px;
+        font-weight: 700;
+        font-size: 0.9rem;
+      }
+
+      .hero {
+        margin-top: 16px;
+        padding: 8px 0 18px;
+      }
+
+      .hero-grid {
+        display: grid;
+        grid-template-columns: 1.1fr 1.8fr;
+        gap: 24px;
+        align-items: start;
+      }
+
+      .panel {
+        background: rgba(13, 24, 38, 0.8);
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        box-shadow: 0 20px 40px var(--shadow);
+        padding: 22px 20px;
+      }
+
+      .panel h3 {
+        margin: 0 0 20px;
+        font-size: 1.1rem;
+        font-weight: 700;
+      }
+
+      .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px 18px;
+      }
+
+      .field {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .field label {
+        color: var(--muted);
+        font-size: 0.82rem;
+      }
+
+      .input-box,
+      .select-box,
+      .range-box {
+        background: rgba(10, 20, 31, 0.8);
+        border: 1px solid rgba(164, 188, 210, 0.12);
+        border-radius: 10px;
+        color: var(--text);
+        padding: 12px 14px;
+        font-size: 1rem;
+      }
+
+      .input-box::placeholder {
+        color: rgba(255,255,255,0.35);
+      }
+
+      .range-box {
+        width: 100%;
+        accent-color: #6ec7ff;
+      }
+
+      .section-space {
+        margin-top: 18px;
+      }
+
+      .cta {
+        margin-top: 18px;
+        width: 100%;
+        border: none;
+        padding: 16px 18px;
+        border-radius: 12px;
+        font-size: 1.05rem;
+        font-weight: 800;
+        color: #08131a;
+        background: linear-gradient(90deg, #75d4ff, #7a9dff);
+        cursor: pointer;
+        box-shadow: 0 10px 22px rgba(109, 165, 255, 0.4);
+      }
+
+      .right-panel {
+        background: rgba(10, 22, 34, 0.8);
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        box-shadow: 0 20px 40px var(--shadow);
+        padding: 22px 20px 20px;
+      }
+
+      .run-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 18px;
+        padding-bottom: 18px;
+      }
+
+      .run-head h3 {
+        margin: 0;
+        font-size: 1.15rem;
+      }
+
+      .live-tag {
+        color: #73f4b5;
+        border: 1px solid rgba(115, 244, 181, 0.5);
+        background: rgba(73, 190, 136, 0.12);
+        border-radius: 999px;
+        padding: 6px 10px;
+        font-size: 0.72rem;
+        letter-spacing: 0.08em;
+        font-weight: 700;
+      }
+
+      .metrics {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(120px, 1fr));
+        gap: 12px;
+      }
+
+      .metric {
+        background: rgba(12, 20, 30, 0.9);
+        border: 1px solid rgba(160, 188, 214, 0.12);
+        border-radius: 12px;
+        padding: 14px 10px;
+        text-align: center;
+      }
+
+      .metric-label {
+        color: var(--muted);
+        font-size: 0.7rem;
+        letter-spacing: 0.08rem;
+        text-transform: uppercase;
+      }
+
+      .metric-value {
+        margin-top: 10px;
+        font-weight: 800;
+        font-size: 1.2rem;
+      }
+
+      .status-box {
+        margin-top: 16px;
+        background: rgba(10, 19, 29, 0.9);
+        border: 1px solid rgba(115, 152, 188, 0.12);
+        border-radius: 14px;
+        padding: 18px 16px;
+        min-height: 160px;
+      }
+
+      .status-box p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 1rem;
+      }
+
+      .portfolio-highlight {
+        margin-top: 18px;
+        font-size: 1.6rem;
+        font-weight: 800;
+        letter-spacing: -0.04em;
+        color: #eef8ff;
+      }
+
+      .mini-grid {
+        margin-top: 18px;
+        display: grid;
+        grid-template-columns: repeat(3, minmax(120px, 1fr));
+        gap: 12px;
+      }
+
+      @media (max-width: 900px) {
+        .hero-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .metrics {
+          grid-template-columns: repeat(2, minmax(120px, 1fr));
+        }
+      }
+
+      @media (max-width: 560px) {
+        body { padding: 18px 14px 30px; }
+        .brand { font-size: 1.6rem; }
+        .form-grid { grid-template-columns: 1fr; }
+        .metrics, .mini-grid { grid-template-columns: 1fr; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="site-shell">
+      <header class="topbar">
+        <div class="brand-wrap">
+          <div class="brand-mark"></div>
+          <h1 class="brand">QuantumPortfolioAI</h1>
+        </div>
+        <div class="chip">QAOA workflow</div>
+      </header>
+
+      <main class="hero">
+        <div class="hero-grid">
+          <section class="panel">
+            <h3>Portfolio Inputs</h3>
+
+            <div class="form-grid">
+              <div class="field">
+                <label>Investment Amount</label>
+                <input id="investmentAmount" class="input-box" type="number" value="95000" min="1000" step="1000" />
+              </div>
+
+              <div class="field">
+                <label>Investment Period (months)</label>
+                <input id="investmentPeriod" class="input-box" type="number" value="24" min="1" step="1" />
+              </div>
+
+              <div class="field">
+                <label>Number of Assets</label>
+                <input id="numAssets" class="input-box" type="number" value="6" min="1" max="8" step="1" />
+              </div>
+
+              <div class="field">
+                <label>Minimum Return</label>
+                <input id="minReturn" class="input-box" type="number" value="30" min="0" max="100" step="1" />
+              </div>
+            </div>
+
+            <div class="section-space">
+              <label style="display:block; color: var(--muted); margin-bottom: 8px;">Risk Tolerance (%)</label>
+              <input id="riskTolerance" class="range-box" type="range" min="0" max="100" value="50" />
+            </div>
+
+            <div class="section-space">
+              <label style="display:block; color: var(--muted); margin-bottom: 8px;">Risk Preference</label>
+              <select id="riskPreference" class="select-box" style="width:100%;">
+                <option>Balanced</option>
+                <option>Conservative</option>
+                <option>Aggressive</option>
+              </select>
+            </div>
+
+            <div class="section-space">
+              <label style="display:block; color: var(--muted); margin-bottom: 8px;">Asset Sectors</label>
+              <select id="assetSectors" class="select-box" style="width:100%;" multiple>
+                <option selected>Technology</option>
+                <option selected>Finance</option>
+                <option>AI</option>
+                <option>Healthcare</option>
+                <option>Energy</option>
+              </select>
+            </div>
+
+            <button id="optimizeBtn" class="cta">Optimize Portfolio</button>
+          </section>
+
+          <section class="right-panel">
+            <div class="run-head">
+              <h3>Quantum Optimization Run</h3>
+              <span class="live-tag">Live</span>
+            </div>
+
+            <div class="metrics">
+              <div class="metric">
+                <div class="metric-label">Algorithm</div>
+                <div id="algoValue" class="metric-value">QAOA</div>
+              </div>
+              <div class="metric">
+                <div class="metric-label">Qubits</div>
+                <div id="qubitValue" class="metric-value">--</div>
+              </div>
+              <div class="metric">
+                <div class="metric-label">Depth</div>
+                <div id="depthValue" class="metric-value">--</div>
+              </div>
+              <div class="metric">
+                <div class="metric-label">Shots</div>
+                <div id="shotsValue" class="metric-value">--</div>
+              </div>
+            </div>
+
+            <div class="status-box">
+              <p id="statusText">Searching feasible portfolios...</p>
+
+              <div id="portfolioHighlight" class="portfolio-highlight">AAPL, AMZN, NVDA</div>
+
+              <div class="mini-grid">
+                <div class="metric">
+                  <div class="metric-label">Return</div>
+                  <div id="returnValue" class="metric-value">14.67%</div>
+                </div>
+                <div class="metric">
+                  <div class="metric-label">Risk</div>
+                  <div id="riskValue" class="metric-value">0.2267</div>
+                </div>
+                <div class="metric">
+                  <div class="metric-label">Score</div>
+                  <div id="scoreValue" class="metric-value">0.0333</div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </main>
+    </div>
+
+    <script>
+      const stockData = [
+        { symbol: 'AAPL', sector: 'Technology', returnRate: 0.12, risk: 0.18 },
+        { symbol: 'MSFT', sector: 'Technology', returnRate: 0.10, risk: 0.16 },
+        { symbol: 'GOOGL', sector: 'Technology', returnRate: 0.11, risk: 0.17 },
+        { symbol: 'AMZN', sector: 'Technology', returnRate: 0.14, risk: 0.22 },
+        { symbol: 'NVDA', sector: 'AI', returnRate: 0.18, risk: 0.28 },
+        { symbol: 'META', sector: 'AI', returnRate: 0.09, risk: 0.24 },
+        { symbol: 'JPM', sector: 'Finance', returnRate: 0.08, risk: 0.15 },
+        { symbol: 'TSLA', sector: 'Energy', returnRate: 0.16, risk: 0.30 }
+      ];
+
+      function readInputs() {
+        const investmentAmount = Number(document.getElementById('investmentAmount').value || 0);
+        const investmentPeriod = Number(document.getElementById('investmentPeriod').value || 1);
+        const numAssets = Number(document.getElementById('numAssets').value || 3);
+        const minReturn = Number(document.getElementById('minReturn').value || 0) / 100;
+        const riskTolerance = Number(document.getElementById('riskTolerance').value || 0) / 100;
+        const riskPreference = document.getElementById('riskPreference').value;
+        const selectedSectors = Array.from(document.getElementById('assetSectors').selectedOptions).map(opt => opt.value);
+
+        return { investmentAmount, investmentPeriod, numAssets, minReturn, riskTolerance, riskPreference, selectedSectors };
+      }
+
+      function optimizePortfolio() {
+        const settings = readInputs();
+        const riskWeight = settings.riskTolerance;
+
+        let eligible = stockData.filter(stock => {
+          const sectorMatch = settings.selectedSectors.length === 0 || settings.selectedSectors.includes(stock.sector);
+          const returnMatch = stock.returnRate >= settings.minReturn;
+          return sectorMatch && returnMatch;
+        });
+
+        if (!eligible.length) {
+          eligible = stockData;
+        }
+
+        const selected = eligible
+          .map(stock => ({
+            ...stock,
+            score: stock.returnRate - riskWeight * stock.risk
+          }))
+          .sort((a, b) => b.score - a.score)
+          .slice(0, Math.max(1, Math.min(settings.numAssets || 3, eligible.length)));
+
+        const totalReturn = selected.reduce((sum, stock) => sum + stock.returnRate, 0) / selected.length;
+        const totalRisk = selected.reduce((sum, stock) => sum + stock.risk, 0) / selected.length;
+        const totalScore = totalReturn - riskWeight * totalRisk;
+
+        const portfolioNames = selected.map(stock => stock.symbol).join(', ');
+
+        document.getElementById('portfolioHighlight').textContent = portfolioNames;
+        document.getElementById('statusText').textContent = 'Searching feasible portfolios...';
+        document.getElementById('returnValue').textContent = `${(totalReturn * 100).toFixed(2)}%`;
+        document.getElementById('riskValue').textContent = totalRisk.toFixed(4);
+        document.getElementById('scoreValue').textContent = totalScore.toFixed(4);
+
+        const qubits = Math.min(8, Math.max(2, Math.ceil(settings.investmentPeriod / 6)));
+        const depth = Math.min(12, Math.max(3, Math.ceil(settings.numAssets / 2)));
+        const shots = Math.min(2048, Math.max(500, Math.round(settings.investmentAmount / 100)));
+
+        document.getElementById('qubitValue').textContent = qubits;
+        document.getElementById('depthValue').textContent = depth;
+        document.getElementById('shotsValue').textContent = shots;
+      }
+
+      document.getElementById('optimizeBtn').addEventListener('click', optimizePortfolio);
+      [
+        'investmentAmount',
+        'investmentPeriod',
+        'numAssets',
+        'minReturn',
+        'riskTolerance',
+        'riskPreference',
+        'assetSectors'
+      ].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+          el.addEventListener('input', optimizePortfolio);
+          el.addEventListener('change', optimizePortfolio);
+        }
+      });
+
+      optimizePortfolio();
+    </script>
+  </body>
+</html>
